@@ -12,17 +12,17 @@ def main():
     Returns:
         _type_: _description_
     """    
-    url = "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records?limit=-1"
+    url = "https://data.nantesmetropole.fr/api/explore/v2.1/catalog/datasets/244400404_parkings-publics-nantes-disponibilites/records?limit=-1"
 
     # topic = sys.argv[1]
-    topic = 'prix-essence'
+    topic = 'parking'
     
     kafka_client = KafkaClient(bootstrap_servers='localhost:9092')
     
     admin = KafkaAdminClient(bootstrap_servers='localhost:9092')
     server_topics = admin.list_topics()
 
-    topic = 'prix-essence'
+    topic = 'parking'
     num_partition = 1
 
     print(server_topics)
@@ -46,9 +46,9 @@ def main():
     while True:
         response = urllib.request.urlopen(url)
         json_file = json.loads(response.read().decode())
-        stations = json_file['results']
-        for station in stations: 
-            producer.send(topic, json.dumps(station).encode())
+        parkings = json_file['results']
+        for p in parkings: 
+            producer.send(topic, json.dumps(p).encode())
         print("{} Produced {} station records".format(datetime.fromtimestamp(time.time()), len(stations)))
         time.sleep(600)
 
