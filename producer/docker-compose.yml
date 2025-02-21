@@ -1,0 +1,29 @@
+version: "3"
+
+volumes:
+  app:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'C:\Users\eloua\OneDrive\Desktop\IMT Atlantique\FISE A3 DASCI\architecture big data\TP2_kafka\producer\app'
+
+services:
+  producer:
+    build: .
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    container_name: producer
+    ports:
+      - '8000:8000'
+    restart: "always"
+    command: /bin/bash
+    networks:
+      - mynetwork
+    volumes:
+      - app:/producer/app
+
+networks:
+  mynetwork:
+    external: true
+

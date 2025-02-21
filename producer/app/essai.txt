@@ -1,0 +1,6 @@
+__init__.py
+essai.txt
+kafka_create_topic.py
+kafka_create_topic_2_partitions.py
+kafka_remove_topic.py
+producer.py

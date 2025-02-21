@@ -1,0 +1,24 @@
+services:
+  consumer:
+    build: .
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    container_name: consumer
+    restart: "always"
+    networks:
+      - mynetwork
+    volumes:
+      - app:/consumer/app
+
+networks:
+  mynetwork:
+    external: true
+
+volumes:
+  app:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'C:\Users\eloua\OneDrive\Desktop\IMT Atlantique\FISE A3 DASCI\architecture big data\TP2_kafka\consumer\app'
+
