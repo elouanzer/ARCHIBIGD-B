@@ -50,7 +50,7 @@ def main():
         for station in stations: 
             producer.send(topic, json.dumps(station).encode())
         print("{} Produced {} station records".format(datetime.fromtimestamp(time.time()), len(stations)))
-        time.sleep(10)
+        time.sleep(600)
 
 if __name__ == "__main__":
     main()
