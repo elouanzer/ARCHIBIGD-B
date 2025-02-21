@@ -46,8 +46,10 @@ def main():
     while True:
         response = urllib.request.urlopen(url)
         json_file = json.loads(response.read().decode())
-        results = json_file['results']
-        print(results)
+        stations = json_file['results']
+        for station in stations: 
+            producer.send(topic, json.dumps(station).encode())
+        print("{} Produced {} station records".format(datetime.fromtimestamp(time.time()), len(stations)))
         time.sleep(10)
 
 if __name__ == "__main__":
