@@ -49,7 +49,7 @@ def main():
         parkings = json_file['results']
         for p in parkings: 
             producer.send(topic, json.dumps(p).encode())
-        print("{} Produced {} station records".format(datetime.fromtimestamp(time.time()), len(stations)))
+        print("{} Produced {} station records".format(datetime.fromtimestamp(time.time()), len(parkings)))
         time.sleep(600)
 
 if __name__ == "__main__":
