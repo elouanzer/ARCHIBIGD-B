@@ -12,11 +12,10 @@ ENV PYTHONUNBUFFERED 1
 # Sets the user name to use when running the image.
 USER root
 RUN apk update
-RUN apk add --no-cache curl
 RUN apk add --no-cache bash
 
 # Make a directory for our app
-WORKDIR /producer
+WORKDIR /publisher
 
 # Install dependencies
 COPY requirements.txt .

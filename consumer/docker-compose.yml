@@ -1,8 +1,8 @@
+version: "3"
+
 services:
   consumer:
     build: .
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
     container_name: consumer
     restart: "always"
     networks:
@@ -20,5 +20,5 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: 'C:\Users\eloua\OneDrive\Desktop\IMT Atlantique\FISE A3 DASCI\architecture big data\TP2_kafka\consumer\app'
+      device: 'C:\Users\eloua\OneDrive\Desktop\IMT Atlantique\FISE A3 DASCI\architecture big data\projet\ARCHIBIGD-B\consumer\app'
 

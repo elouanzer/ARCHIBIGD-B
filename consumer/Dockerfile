@@ -14,9 +14,7 @@ ENV PYTHONUNBUFFERED 1
 
 # Sets the user name to use when running the image.
 USER root
-RUN apk update
-RUN apk add --no-cache curl
-RUN apk add --no-cache bash
+RUN apk update 
 
 # Make a directory for app
 WORKDIR /consumer
@@ -30,5 +28,4 @@ RUN  pip install --no-cache-dir -r requirements.txt
 COPY ./app ./app
 
 # Run the application
-CMD ["bash"]
-# CMD ["python", "app/consumer.py"]
+CMD ["python", "app/consumer.py"]

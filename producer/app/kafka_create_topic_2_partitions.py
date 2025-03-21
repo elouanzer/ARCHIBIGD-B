@@ -6,7 +6,7 @@ def main():
     admin = KafkaAdminClient(bootstrap_servers='localhost:9092')
     server_topics = admin.list_topics()
 
-    topic = "topic"
+    topic = "parking"
     num_partition = 2
 
     print(server_topics)
