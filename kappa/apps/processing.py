@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType,StructField,LongType,IntegerType,FloatType,StringType
-from pyspark.sql.functions import split,sum,from_json,col
+from pyspark.sql.types import StructType,StructField,LongType,IntegerType,FloatType,StringType,DoubleType
+from pyspark.sql.functions import split,sum,from_json,col, date_format, to_timestamp, greatest, lit
 import sys
 
 def main():
@@ -46,14 +46,28 @@ def main():
         .select("data.*")
     '''
     df1 = df.select(
-        col("timestamp"),
+        col("Timestamp"),
         from_json(col("value").cast("string"), message_schema).alias("data")
-    ).select("timestamp", "data.*")
+        ).select(
+            to_timestamp(date_format(col("timestamp"), "yyyy-MM-dd HH:mm"), "yyyy-MM-dd HH:mm").alias("date"),
+            "data.grp_identifiant",
+            "data.grp_nom",
+            "data.grp_statut",
+            "data.grp_disponible",
+            "data.grp_exploitation",
+            "data.grp_complet",
+            "data.grp_horodatage",
+            "data.idobj",
+            col("data.location.lon").alias("longitude"),
+            col("data.location.lat").alias("latitude"),
+            "data.disponibilite"
+        )
+
 
     df1.printSchema()
 
-    df1.filter(col("grp_statut") > 0)
-    df1 = df1.withColumn("dispo_pourcentage", (max(0,col("grp_disponible")) / col("grp_exploitation")) * 100)
+    df1 = df1.filter(col("grp_statut") > 0)
+    df1 = df1.withColumn("dispo_pourcentage", 100*(greatest(col("grp_disponible"), lit(0.0)) / col("grp_exploitation")))
 
     df1.printSchema()
 
