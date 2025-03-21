@@ -12,7 +12,7 @@ WITH replication = {
 session.execute(qry) 
 
 qry=''' 
-CREATE TABLE IF NOT EXISTS projet.parking_1 (
+CREATE TABLE IF NOT EXISTS projet.parking_data (
    date timestamp,
    grp_identifiant text,
    grp_nom text,

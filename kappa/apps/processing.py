@@ -75,13 +75,13 @@ def main():
         writeDF.write \
             .format("org.apache.spark.sql.cassandra")\
             .mode('append')\
-            .options(table="transactions1", keyspace="demo")\
+            .options(table="parking_data", keyspace="projet")\
             .save()
 
     df1.writeStream \
         .option("spark.cassandra.connection.host","cassandra1:9042")\
         .foreachBatch(writeToCassandra) \
-        .outputMode("update") \
+        .outputMode("append") \
         .start()\
         .awaitTermination()
    
