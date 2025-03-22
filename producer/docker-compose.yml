@@ -25,4 +25,4 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: 'C:\Users\eloua\OneDrive\Desktop\IMT Atlantique\FISE A3 DASCI\architecture big data\projet\ARCHIBIGD-B\producer\app'
+      device: 'C:\Users\amine\Downloads\DASCI\UE H Architecture Big Data Avancée\ARCHIBIGD-B\producer\app'
