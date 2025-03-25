@@ -62,8 +62,9 @@ def main():
         )
     
     # Ajouter des colonnes pour partitionner les données
-    df1 = df1.withColumn("heure", hour(col("date"))) \
-             .withColumn("jour", dayofmonth(col("date")))
+    df1 = df1.withColumn("jour", dayofmonth(col("date")))\
+             .withColumn("heure", hour(col("date")))
+             
 
 
     def writeToParquet(writeDF, epochId):
