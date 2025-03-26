@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType,StructField,LongType,IntegerType,FloatType,StringType,DoubleType
-from pyspark.sql.functions import split,sum,from_json,col, date_format, to_timestamp, greatest, lit
+from pyspark.sql.functions import split,sum,from_json,col, date_format, to_timestamp, greatest, lit, hour, dayofmonth,current_timestamp, expr
 import sys
 
 def main():
@@ -65,10 +65,15 @@ def main():
 
 
     df1.printSchema()
-
+    # dataframe ajouté en parquet pour un traitement en batch
+    df_batch = df1.withColumn("jour", dayofmonth(col("date")))\
+        .withColumn("heure", hour(col("date")))
+    
+    # dataframe ajouté a cassandra en stream
     df1 = df1.filter(col("grp_statut") > 0)
+    df1 = df1.withColumn("grp_horodatage", to_timestamp(col("grp_horodatage"), "yyyy-MM-dd'T'HH:mm:ssXXX"))
     df1 = df1.withColumn("dispo_pourcentage", 100*(greatest(col("grp_disponible"), lit(0.0)) / col("grp_exploitation")))
-
+    df1 = df1.withColumn("valide", (current_timestamp() - col("grp_horodatage") <= expr("INTERVAL 15 MINUTES")))
     df1.printSchema()
 
     def writeToCassandra(writeDF, epochId):
@@ -77,13 +82,34 @@ def main():
             .mode('append')\
             .options(table="parking_data", keyspace="projet")\
             .save()
+    
+    def writeToParquet(writeDF, epochId):
+        print(f"Processing epoch {epochId}")
+        writeDF.show(5)  # afficher quelques lignes du batch
+        writeDF.write\
+        .format('parquet')\
+        .partitionBy("heure", "jour")\
+        .mode("append")\
+        .parquet("parquet_data_file")
+        print(f"Epoch {epochId} written successfully")
 
-    df1.writeStream \
-        .option("spark.cassandra.connection.host","cassandra1:9042")\
+
+    query1 = df1.writeStream \
+        .option("spark.cassandra.connection.host", "cassandra1:9042")\
         .foreachBatch(writeToCassandra) \
         .outputMode("append") \
-        .start()\
-        .awaitTermination()
+        .start()
+
+    query2 = df_batch.writeStream \
+        .foreachBatch(writeToParquet) \
+        .outputMode("append") \
+        .trigger(processingTime="600 seconds")\
+        .option('checkpointLocation', "./checkpoint")\
+        .start()
+
+    query1.awaitTermination()
+    query2.awaitTermination()
+
    
 
 if __name__ == "__main__":

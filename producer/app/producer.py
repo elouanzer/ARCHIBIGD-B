@@ -50,7 +50,7 @@ def main():
         for p in parkings: 
             producer.send(topic, json.dumps(p).encode())
         print("{} Produced {} station records".format(datetime.fromtimestamp(time.time()), len(parkings)))
-        time.sleep(300)
+        time.sleep(180)
 
 if __name__ == "__main__":
     main()

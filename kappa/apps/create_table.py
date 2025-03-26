@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS projet.parking_data (
    latitude double,
    disponibilite int,
    dispo_pourcentage double,
+   valide boolean,
    PRIMARY KEY (grp_identifiant, date)  -- 'grp_identifiant' et 'date' ensemble pour garantir l'unicité
 );'''
 
