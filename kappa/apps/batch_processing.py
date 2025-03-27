@@ -22,7 +22,7 @@ def load_and_aggregate_parquet(base_path):
             
             if parquet_files:
                 df = spark.read.parquet(*parquet_files)
-                aggregated_df = (df.groupBy("grp_nom", "grp_identifiant")
+                aggregated_df = (df.groupBy("grp_nom", "grp_identifiant","latitude","longitude")
                                    .agg(avg("disponibilite").alias("moyenne_disponibilite")))
                 
                 aggregated_df = aggregated_df.withColumn("heure", lit(heure_value))
@@ -39,17 +39,19 @@ def load_and_aggregate_parquet(base_path):
         return None
 
 def create_cassandra_table():
-    clstr = Cluster(['172.18.0.4'])
+    clstr = Cluster(['172.18.0.3'])
     session = clstr.connect()
     
     session.execute('''CREATE KEYSPACE IF NOT EXISTS projet 
                        WITH replication = {'class' : 'SimpleStrategy', 'replication_factor' : 1};''')
     
-    session.execute('''CREATE TABLE IF NOT EXISTS projet.parking_batch_1 (
+    session.execute('''CREATE TABLE IF NOT EXISTS projet.parking_batch_2 (
                        heure int,
                        jour int,
                        grp_identifiant int,
                        grp_nom text,
+                       latitude double,
+                       longitude double,
                        moyenne_disponibilite double,
                        PRIMARY KEY ((heure, jour), grp_identifiant)
                        );''')
@@ -58,7 +60,7 @@ def write_to_cassandra(df):
     df.write \
       .format("org.apache.spark.sql.cassandra") \
       .mode("append") \
-      .options(table="parking_batch_1", keyspace="projet") \
+      .options(table="parking_batch_2", keyspace="projet") \
       .save()
 
 if __name__ == "__main__":
