@@ -103,7 +103,6 @@ def main():
     query2 = df_batch.writeStream \
         .foreachBatch(writeToParquet) \
         .outputMode("append") \
-        .trigger(processingTime="600 seconds")\
         .option('checkpointLocation', "./checkpoint")\
         .start()
 
