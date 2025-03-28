@@ -12,3 +12,7 @@ Après avoir lancé les différents conteneurs, la récupération des données s
 Ceci se fait lorsque que de nouveaux messages sont écrits dans le topic parking (donc **producer.py** doit tourner en parallèle pour alimenter ces tables / fichiers parquet).
 
 Le traitement en batch se fait dans **kappa/apps/batch_processing.py** (possibilité de le lancer avec bash batch_processing.sh) : les données sont récupérées depuis les parquets et groupées par (id, heure, jour) et faisant une moyenne des places disponibles pour de futurs visualisation. Quelques idées de visualisation sont implémentés dans le fichier **kappa/apps/visu.ipynb**.
+
+# Architecture globale
+
+![Architecture](architecture.png)
